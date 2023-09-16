@@ -1,16 +1,10 @@
-# qBittorrent and OpenVPN
-#
-# Version 1.8
+FROM ubuntu:latest
 
-FROM ubuntu:20.04
-MAINTAINER MarkusMcNugen
-
-VOLUME /downloads
-VOLUME /config
-
-ENV DEBIAN_FRONTEND noninteractive
+WORKDIR /opt
 
 RUN usermod -u 99 nobody
+
+RUN mkdir -p /downloads /config/qBittorrent /etc/openvpn /etc/qbittorrent
 
 # Update packages and install software
 RUN apt-get update \
@@ -21,7 +15,8 @@ RUN apt-get update \
     && apt-get install -y qbittorrent-nox openvpn curl moreutils net-tools dos2unix kmod iptables ipcalc unrar \
     && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-# Add configuration and scripts
+VOLUME /config /downloads
+
 ADD openvpn/ /etc/openvpn/
 ADD qbittorrent/ /etc/qbittorrent/
 
